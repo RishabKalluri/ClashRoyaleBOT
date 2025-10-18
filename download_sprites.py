@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 GITHUB_URL = "https://api.github.com/repos/smlbiobot/cr-assets-png/contents/assets/sc/"
 CLASSES_PATH = "classes.json"
-SAVE_DIR = "sprites"
+SAVE_PATH = "sprites"
 MAX_RETRIES = 3
 MAX_WORKERS = 8
 
@@ -44,7 +44,7 @@ def download_file(url, save_path):
 def download_class_sprites(local_name, github_name):
     """Download all sprites for a single class."""
     base_url = f"{GITHUB_URL}chr_{github_name}_out/"
-    save_dir = os.path.join(SAVE_DIR, local_name)
+    save_dir = os.path.join(SAVE_PATH, local_name)
     os.makedirs(save_dir, exist_ok=True)
 
     r = safe_request(base_url)
@@ -59,7 +59,7 @@ def download_class_sprites(local_name, github_name):
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         futures = []
         for file in png_files:
-            save_path = os.path.join(save_dir, file["name"])
+            save_path = os.path.join(save_dir, f"{local_name.lower()}_{file['name'].split('_')[-1]}")
             futures.append(executor.submit(download_file, file["download_url"], save_path))
 
         for f in tqdm(as_completed(futures), total=len(futures), desc=f"⬇️ {local_name}", ncols=80):
