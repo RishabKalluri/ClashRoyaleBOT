@@ -1,2 +1,8 @@
 requests
 tqdm
+transformers
+pytesseract
+opencv-python
+matplotlib
+Pillow
+numpy
